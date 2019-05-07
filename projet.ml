@@ -78,18 +78,55 @@ let rec statistique (l: char list) : abCode list =
                  *  [(Feuille('x'),3);(Feuille('y'),2);(Feuille('z'),1)]*)
 	match l with
 		| [] -> []
-		| e::s -> Feuille (e,)
+		| e::s -> (Feuille(e, compteur l e))::(statistique (supprime l e))
+;;
 
 let rec	compteur (l : char list) (c:char) : int =
 	match l with
 		| [] -> 0
 		| e::s -> if e=c then 1 + compteur s c else compteur s c
 ;;
+
+let rec supprime (l : char list) (c:char) : char list =
+	(*(supprime l c) = renvoie une nouvelle liste sans les characteres c de la liste l*)
+	match l with
+		| [] -> []
+		| e::s -> if e=c then supprime s c else e::(supprime s c)
+;;
 	
-let rec huffman (lc : abCode list) : abCode = 
+let rec huffman (lc : abCode list) : abCode liste = 
         (*(huffman l)=l'arbre de codage qui correspond à la liste de 
          * couples (caractère,fréquence) vu comme des feuilles 
-         * ordonnée par ordre croissant.*) ;;
+         * ordonnée par ordre croissant.*)
+	match lc with
+		| []
+;;
+
+let rec supprimeAbCode (lc : abCode list) (ab : abCode) : abCode list =
+	match lc with
+		| [] -> []
+		| e::s -> if e=ab then supprime s ab else e::(supprime s ab)
+	
+let rec valMax (lc : abCode list) (max:int) : int =
+			match lc with
+				| [] -> max
+				| e::s -> let i = abCodeVint (e) in if i>=max then valMax s i else valMax s max
+				| [e] -> let i = abCodeVint (e) in if i>=max then i else max
+;;
+
+let abCodeVint (ab : abCode) : int =
+	(*abCode vers int*)
+	match ab with
+		| Feuille(c,i) -> i
+		| Noeud(g,(c,i),d) -> i
+;;
+
+let abCodeVchar (ab : abCode) : char =
+	(*abCode vers char*)
+	match ab with
+		| Feuille(c,i) -> c
+		| Noeud(g,(c,i),d) -> c
+;;
 
 let rec compression (ab:abCode) (lc: char list)=
         (*compression ab l= la liste l compressée en utilisant l'arbre de codage ab.*);;
