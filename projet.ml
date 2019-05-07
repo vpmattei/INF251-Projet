@@ -94,7 +94,7 @@ let rec supprime (l : char list) (c:char) : char list =
 		| e::s -> if e=c then supprime s c else e::(supprime s c)
 ;;
 	
-let rec huffman (lc : abCode list) : abCode liste = 
+let rec huffman (lc : abCode list) : abCode = 
         (*(huffman l)=l'arbre de codage qui correspond à la liste de 
          * couples (caractère,fréquence) vu comme des feuilles 
          * ordonnée par ordre croissant.*)
@@ -106,6 +106,7 @@ let rec supprimeAbCode (lc : abCode list) (ab : abCode) : abCode list =
 	match lc with
 		| [] -> []
 		| e::s -> if e=ab then supprime s ab else e::(supprime s ab)
+;;
 	
 let rec valMax (lc : abCode list) (max:int) : int =
 			match lc with
