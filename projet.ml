@@ -7,7 +7,7 @@ type abCode =
      |  Noeud   of abCode*cellule*abCode ;;             (*Noeuds internes*)
 
 type liste_code = abCode list;;
-type liste_binaire = bool list;; 
+type liste_binaire = bool list;;
 
 (* fonctions permettant d'implanter les entrées sorties avec les fichiers. 
  *
@@ -68,6 +68,8 @@ let get_codage (s : string) :  abCode =
 (* Profil de fonctions importantes du projet *)
 
 
+(*Methode statistique et ses methodes fils*)
+
 let rec statistique (l: char list) : abCode list =
         (*(statistique l) = produit la liste des arbres qui sont des feuilles 
          * et qui contiennent les couples formés des lettres apparaissant dans l avec leur 
@@ -93,26 +95,34 @@ let rec supprime (l : char list) (c:char) : char list =
 		| [] -> []
 		| e::s -> if e=c then supprime s c else e::(supprime s c)
 ;;
-	
-let rec huffman (lc : abCode list) : abCode = 
-        (*(huffman l)=l'arbre de codage qui correspond à la liste de 
-         * couples (caractère,fréquence) vu comme des feuilles 
-         * ordonnée par ordre croissant.*)
+
+
+(*Methode listeAbCodeCroissante et ses methodes fils*)
+
+let rec listeAbCodeCroissante (lc : abCode list) : abCode list =
 	match lc with
-		| []
+		| [] -> []
+		| e::s -> ((valMin lc (valMax lc (Feuille('a',0))))::(listeAbCodeCroissante (supprimeAbCode lc (valMin lc (valMax lc (Feuille('a',0)))))))
 ;;
 
 let rec supprimeAbCode (lc : abCode list) (ab : abCode) : abCode list =
 	match lc with
 		| [] -> []
-		| e::s -> if e=ab then supprime s ab else e::(supprime s ab)
+		| e::s -> if e=ab then supprimeAbCode s ab else e::(supprimeAbCode s ab)
 ;;
 	
-let rec valMax (lc : abCode list) (max:int) : int =
-			match lc with
-				| [] -> max
-				| e::s -> let i = abCodeVint (e) in if i>=max then valMax s i else valMax s max
-				| [e] -> let i = abCodeVint (e) in if i>=max then i else max
+let rec valMax (lc : abCode list) (max:abCode) : abCode =
+	(*Valeur maximale d'une liste des abCodes*)
+	match lc with
+		| [] -> max
+		| e::s -> let i = abCodeVint (e) in if i >= abCodeVint (max) then valMax s e else valMax s max
+;;
+
+let rec valMin (lc : abCode list) (min:abCode) : abCode =
+	(*Valeur minimum d'une liste des abCodes*)
+	match lc with
+		| [] -> min
+		| e::s -> let i = abCodeVint (e) in if i <= abCodeVint (min) then valMin s e else valMin s min
 ;;
 
 let abCodeVint (ab : abCode) : int =
@@ -127,6 +137,30 @@ let abCodeVchar (ab : abCode) : char =
 	match ab with
 		| Feuille(c,i) -> c
 		| Noeud(g,(c,i),d) -> c
+;;
+
+
+(*Methode huffman et ses methodes fils*)
+
+let rec huffman (lc : abCode list) : abCode = 
+        (*(huffman l)=l'arbre de codage qui correspond à la liste de 
+         * couples (caractère,fréquence) vu comme des feuilles 
+         * ordonnée par ordre croissant.*)
+	let lc = listeAbCodeCroissante (lc) in
+	match lc with
+		| [] -> Feuille('a',0)
+		| [e] -> e
+		| e::s -> let s1::s2 = s in huffman((sommeAbCode e s1)::s2)
+;;
+
+let sommeAbCode (ab1 : abCode) (ab2 : abCode) : abCode =
+	(*sommeAbCode ab1 ab2 = Somme de deux abCodes*)
+	Noeud(ab1 ,('*',(abCodeVint ab1 + abCodeVint ab2)), ab2)
+;;
+
+let abCodeListe (lc : abCode list) : abCode =
+	match lc with
+		| e::s -> let s1::s2 = s in s1
 ;;
 
 let rec compression (ab:abCode) (lc: char list)=
