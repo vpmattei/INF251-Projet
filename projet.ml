@@ -100,6 +100,7 @@ let rec supprime (l : char list) (c:char) : char list =
 (*Methode listeAbCodeCroissante et ses methodes fils*)
 
 let rec listeAbCodeCroissante (lc : abCode list) : abCode list =
+	(*Renvoie la liste abCode en ordre croissante*)
 	match lc with
 		| [] -> []
 		| e::s -> ((valMin lc (valMax lc (Feuille('a',0))))::(listeAbCodeCroissante (supprimeAbCode lc (valMin lc (valMax lc (Feuille('a',0)))))))
@@ -126,14 +127,14 @@ let rec valMin (lc : abCode list) (min:abCode) : abCode =
 ;;
 
 let abCodeVint (ab : abCode) : int =
-	(*abCode vers int*)
+	(*abCode vers int, renvoie le int du abCode*)
 	match ab with
 		| Feuille(c,i) -> i
 		| Noeud(g,(c,i),d) -> i
 ;;
 
 let abCodeVchar (ab : abCode) : char =
-	(*abCode vers char*)
+	(*abCode vers char, renvoie le char du abCode*)
 	match ab with
 		| Feuille(c,i) -> c
 		| Noeud(g,(c,i),d) -> c
@@ -146,21 +147,16 @@ let rec huffman (lc : abCode list) : abCode =
         (*(huffman l)=l'arbre de codage qui correspond à la liste de 
          * couples (caractère,fréquence) vu comme des feuilles 
          * ordonnée par ordre croissant.*)
-	let lc = listeAbCodeCroissante (lc) in
+	let lc = listeAbCodeCroissante (lc) in	(*Met la liste en ordre croissante*)
 	match lc with
-		| [] -> Feuille('a',0)
+		| [] -> Feuille('0',0)
 		| [e] -> e
 		| e::s -> let s1::s2 = s in huffman((sommeAbCode e s1)::s2)
 ;;
 
 let sommeAbCode (ab1 : abCode) (ab2 : abCode) : abCode =
-	(*sommeAbCode ab1 ab2 = Somme de deux abCodes*)
+	(*(sommeAbCode ab1 ab2) = Somme de deux abCodes*)
 	Noeud(ab1 ,('*',(abCodeVint ab1 + abCodeVint ab2)), ab2)
-;;
-
-let abCodeListe (lc : abCode list) : abCode =
-	match lc with
-		| e::s -> let s1::s2 = s in s1
 ;;
 
 let rec compression (ab:abCode) (lc: char list)=
