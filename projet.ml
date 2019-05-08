@@ -84,6 +84,7 @@ let rec statistique (l: char list) : abCode list =
 ;;
 
 let rec	compteur (l : char list) (c:char) : int =
+	(*Compte combiens de fois on a le char 'c' dans la liste de chars 'l'*)
 	match l with
 		| [] -> 0
 		| e::s -> if e=c then 1 + compteur s c else compteur s c
@@ -107,6 +108,7 @@ let rec listeAbCodeCroissante (lc : abCode list) : abCode list =
 ;;
 
 let rec supprimeAbCode (lc : abCode list) (ab : abCode) : abCode list =
+	(*supprimeAbCode lc ab = renvoie la liste de abCodes sans le abCode 'ab'*)
 	match lc with
 		| [] -> []
 		| e::s -> if e=ab then supprimeAbCode s ab else e::(supprimeAbCode s ab)
@@ -159,8 +161,10 @@ let sommeAbCode (ab1 : abCode) (ab2 : abCode) : abCode =
 	Noeud(ab1 ,('*',(abCodeVint ab1 + abCodeVint ab2)), ab2)
 ;;
 
-let rec compression (ab:abCode) (lc: char list)=
-        (*compression ab l= la liste l compressée en utilisant l'arbre de codage ab.*);;
+let rec compression (ab:abCode) (lc: char list) : char list =
+    (*compression ab l= la liste l compressée en utilisant l'arbre de codage ab.*)
+	
+;;
 
 let lecture_liste_compressee (n : string) : char list = 
         (* lecture_liste_compressee "nomfic" va récupérer la liste des caractères 
@@ -172,7 +176,7 @@ let rec decompression (ab:abCode) (ld : char list)=
         (*décompression ab ld = décompresse la liste de caractère ld en utilisant l'arbre ab *);;
  
 (* Front end du projet. Il y a une fonction de compression qui prend 
- * le nom d'un fichier "nomfic" et engengre deux fichier "nomfic.huf"
+ * le nom d'un fichier "nomfic" et engendre deux fichier "nomfic.huf"
  * et "nomfic.cod". "nomfic.huf" contient le fichier d'origine compressé
  * suivant la méthode d'Huffman. Le fichier nomfic.cod contient l'arbre 
  * de codage. 
